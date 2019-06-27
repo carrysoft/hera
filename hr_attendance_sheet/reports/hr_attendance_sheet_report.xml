@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<odoo>
+  <report id="attendance_sheet"
+    string="Imprimir Hoja"
+    model="attendance.sheet"
+    report_type="qweb-pdf"
+    name="hr_attendance_sheet.report_attendance_sheet"
+    file="hr_attendance_sheet.report_attendance_sheet"
+  />
+<template id="report_attendance_sheet">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="web.external_layout">
+              <div class="page">
+	        <h3 t-field="o.name"/>
+	      </div>
+	      <table class="table table-responsive">
+		<tr style="border: 2px solid black;">
+                   <td><strong>Fecha</strong></td>
+                   <td><strong>Dia</strong></td>
+                   <td><strong>H.Ent</strong></td>
+                   <td><strong>H.Sal</strong></td>
+                   <td><strong>Entrada</strong></td>
+                   <td><strong>Salida</strong></td>
+                   <td><strong>Retraso</strong></td>
+                   <td><strong>Extra</strong></td>
+                   <td><strong>Horas</strong></td>
+                   <td><strong>Estado</strong></td>
+                   <td><strong>Nota</strong></td>
+                </tr>
+		<t t-foreach="o.att_sheet_line_ids" t-as="l">
+		  <tr style="border: 2px solid grey;">
+	            <td><span t-field="l.date" t-options='{"widget":"date"}' /></td>
+		    <td><span t-field="l.day"/></td>
+		    <td><span t-field="l.pl_sign_in" t-options='{"widget":"float_time"}' /></td>
+		    <td><span t-field="l.pl_sign_out" t-options='{"widget":"float_time"}' /></td>
+		    <td><span t-field="l.ac_sign_in" t-options='{"widget":"float_time"}' /></td>
+		    <td><span t-field="l.ac_sign_out" t-options='{"widget":"float_time"}' /></td>
+		    <td><span t-field="l.late_in" t-options='{"widget":"float_time"}' /></td>
+		    <td><span t-field="l.overtime" t-options='{"widget":"float_time"}' /></td>
+		    <td><span t-field="l.worked_hours" t-options='{"widget":"float_time"}' /></td>
+		    <td><span t-field="l.status"/></td>
+		    <td><span t-field="l.note"/></td>
+		  </tr>
+	        </t>
+              </table>
+            <div class="row" name="total">
+            <div class="col-xs-8 pull-right">
+                <table class="table table-condensed">
+                  <tr class="border-black">
+                    <td><strong>Total Retrasos: </strong>
+                      <t t-esc="sum(l.late_in for l in o.att_sheet_line_ids)" t-options='{"widget":"float_time"}' />
+                    </td>
+                    <td><strong>Total Extras: </strong>
+                      <t t-esc="sum(l.overtime for l in o.att_sheet_line_ids)" t-options='{"widget":"float_time"}' />
+                    </td>
+                    <td><strong>Total Trabajadas: </strong>
+                      <t t-esc="sum(l.worked_hours for l in o.att_sheet_line_ids)" t-options='{"widget":"float_time"}' />
+                    </td>
+                  </tr>
+                </table>
+            </div>
+            </div>
+            </t>
+        </t>
+    </t>
+</template>
+
+</odoo>
